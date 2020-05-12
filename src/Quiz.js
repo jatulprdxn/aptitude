@@ -14,7 +14,7 @@ class Quiz extends Component {
       question:[],
       currentIndex:0,
       score:0,
-      questionAttends:[],
+      questionAttends:[{answer: "", questionId: ""}],
       minutes:30,
       seconds:0
     };
@@ -57,16 +57,17 @@ class Quiz extends Component {
   }
 
   computeScore = (answer,correctAnswer,questionId) => {
-    let questionAttends = [];
+    let questionAttends = this.state.questionAttends;
     
     if(answer === correctAnswer) {
       this.setState({
         score:this.state.score + 1
       })
     }
-   questionAttends.push(...this.state.questionAttends,answer)
+
+    questionAttends = questionAttends.filter((item,index) => item.questionId !== questionId);
+    questionAttends.push({"answer":answer,"questionId":questionId});
    
-    questionAttends = questionAttends.filter((item,index) => questionAttends.indexOf(item) === index);
     this.setState({
       questionAttends,
     })
@@ -84,31 +85,6 @@ class Quiz extends Component {
   }
 
   startTimer = () => {
-    // const countDownTime = Date.now() + 30000;
-    // this.interval = setInterval(() => {
-    //   const now = new Date();
-    //   const distance = countDownTime - now;
-    //   const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    //   const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-    //   if(distance < 0) {
-    //     clearInterval(this.interval);
-    //     this.setState({
-    //       timer:{
-    //         minutes:0,
-    //         seconds:0
-    //       }
-    //     },() => {
-    //       alert('quiz is over');
-    //     })
-    //   } else {
-    //     this.setState({
-    //       time:{
-    //         minutes,
-    //         seconds
-    //       }
-    //     })
-    //   }
-    // },1000)
     this.interval = setInterval(() => {
       const { seconds, minutes } = this.state
 
@@ -155,8 +131,8 @@ class Quiz extends Component {
                 <QuestionsBox 
                   question={question} 
                   options={answers} 
-                  key={questionId} 
-                  selected={answer => this.computeScore(answer,correct,questionId)}
+                  queId={questionId} 
+                  selected={(answer,key) => this.computeScore(answer,correct,key)}
                   questionAttends = {this.state.questionAttends}
                 />
                 <ButtonContainer>

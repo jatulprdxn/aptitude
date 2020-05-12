@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const QuestionsBox = ({question,options,selected,questionAttends}) => {
+const QuestionsBox = ({question,options,queId,selected,questionAttends}) => {
 	return (
 		<OptionContainer>
 			<Option>{question}</Option>
@@ -11,9 +11,9 @@ const QuestionsBox = ({question,options,selected,questionAttends}) => {
 						key={index} 
 						className="ansbtn" 
 						onClick={() => {
-							selected(text);	
+							selected(text,queId);	
 							}}
-							questionAttends={ questionAttends.includes(text) }
+							questionAttends={ questionAttends.some(item => item.answer === text)}
 							>
 						{text}
 					</OptionButton>
