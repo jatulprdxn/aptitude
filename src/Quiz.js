@@ -4,7 +4,6 @@ import axios from 'axios';
 import QuestionsBox from './component/QuestionsBox';
 import Headers from './component/Header';
 
-
 class Quiz extends Component {
   constructor(props) {
     super(props)
@@ -16,7 +15,8 @@ class Quiz extends Component {
       score:0,
       questionAttends:[{answer: "", questionId: ""}],
       minutes:30,
-      seconds:0
+      seconds:0,
+      count:0
     };
     this.interval = null;
   }
@@ -38,7 +38,7 @@ class Quiz extends Component {
 
   currentQuestion = (text) => {
     const { questionBank,currentIndex } = this.state;
-    
+  
     let question = [];
     let questionIndex = ''
 
@@ -52,33 +52,29 @@ class Quiz extends Component {
     
     this.setState({
       question,
-      currentIndex:questionIndex
+      currentIndex:questionIndex,
     })  
   }
 
   computeScore = (answer,correctAnswer,questionId) => {
+    
     let questionAttends = this.state.questionAttends;
     
-    if(answer === correctAnswer) {
-      this.setState({
-        score:this.state.score + 1
-      })
-    }
-
     questionAttends = questionAttends.filter((item,index) => item.questionId !== questionId);
     questionAttends.push({"answer":answer,"questionId":questionId});
-   
+
     this.setState({
       questionAttends,
     })
   }
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();  
+
     this.props.history.push(
       {
         pathname: '/result',
         state: { questionAttends: this.state.questionAttends,
-        score: this.state.score,
         questionBank: this.state.questionBank 
       }
     });
@@ -150,7 +146,7 @@ class Quiz extends Component {
                   <StartButton onClick={this.startTimer}>Start the aptitude</StartButton>
                 </Start>  
                 { questionBank.length-1 === this.state.currentIndex &&
-                <SubmitButton onClick={this.handleSubmit}>Submit</SubmitButton>
+                <SubmitButton onClick={(e) => this.handleSubmit(e)}>Submit</SubmitButton>
                 }
               </> 
             )

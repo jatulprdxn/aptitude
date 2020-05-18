@@ -3,9 +3,18 @@ import styled from 'styled-components';
 import {
   Link
 } from "react-router-dom";
-function Results(props) {
 
-	const { questionAttends, score, questionBank } = props.location.state;
+function Results(props) {
+	const { questionAttends, questionBank } = props.location.state;
+	let score = 0;
+	 questionBank.forEach(item1 => {
+      questionAttends.forEach(item2 => { 
+        if(item2.answer === item1.correct) {
+            score++;
+        } 
+      }) 
+    })
+
 	let per = ((score/questionBank.length) * 100).toFixed(2);
 	const obj = [
 		{
@@ -14,7 +23,7 @@ function Results(props) {
 	 },
 	 {
 		text: "Number of attempted questions",
-		count: questionAttends && questionAttends.length
+		count: questionAttends && questionAttends.length - 1
 	 },
 	 {
 		 text: "Number of correct answer",
